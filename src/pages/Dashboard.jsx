@@ -1,4 +1,11 @@
-import { Skeleton, Stack } from "@chakra-ui/react";
+import {
+  Avatar,
+  CardBody,
+  Center,
+  HStack,
+  Skeleton,
+  Stack,
+} from "@chakra-ui/react";
 import {
   SimpleGrid,
   Card,
@@ -16,6 +23,7 @@ import {
   DrawerBody,
   Input,
   Select,
+  Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -38,7 +46,16 @@ export default function Dashboard() {
       .then((res) => res.json())
       .then((data) => {
         setIsLoading(false);
-        console.log(data);
+        if (data.message) {
+          return toast({
+            title: "Server error",
+            description: ` ${data.message}`,
+            duration: 5000,
+            isClosable: true,
+            status: "error",
+            position: "top",
+          });
+        }
         setRepos(data);
         setFilteredRepos(data);
       })
@@ -56,7 +73,10 @@ export default function Dashboard() {
 
   const indexOfLastRepo = (currentPage + 1) * reposPerPage;
   const indexOfFirstRepo = indexOfLastRepo - reposPerPage;
-  const currentRepos = filteredRepos?.slice(indexOfFirstRepo, indexOfLastRepo);
+  const currentRepos =
+    filteredRepos.length > 0
+      ? filteredRepos?.slice(indexOfFirstRepo, indexOfLastRepo)
+      : [];
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
@@ -92,12 +112,12 @@ export default function Dashboard() {
   }
   return (
     <>
-      <Flex justifyContent="space-between" alignItems="center" mb={4}>
+      <Flex justifyContent="space-between" alignItems="center" mb={4} mt="7rem">
         <Input
           placeholder="Search repositories"
           value={searchTerm}
           onChange={handleSearch}
-          w="70%"
+          w={{ base: "100%", md: "40%" }}
           mr={4}
         />
         <IconButton onClick={onOpen} icon={<i className="fas fa-filter"></i>} />
@@ -128,14 +148,37 @@ export default function Dashboard() {
               bg="white"
             >
               <CardHeader>
-                <Flex gap={5}>
+                <Flex gap={5} alignItems="center">
+                  <Avatar name="github-logo" src="/github-logo.png" />
                   <Box>
-                    <Heading as="h3" size="sm" _hover={{ color: "teal.700" }}>
+                    <Text as="h2" size="sm" _hover={{ color: "teal.700" }}>
                       <Link to={`/repo-details/${repo.name}`}>{repo.name}</Link>
-                    </Heading>
+                    </Text>
                   </Box>
                 </Flex>
               </CardHeader>
+              <CardBody>
+                <HStack>
+                  <Text
+                    border="1px"
+                    borderRadius="md"
+                    p="6px"
+                    bg="purple.400"
+                    color="white"
+                  >
+                    {repo.visibility}
+                  </Text>
+                  <Text
+                    border="2px"
+                    borderRadius="md"
+                    borderColor="purple.400"
+                    p="6px"
+                    ml={4}
+                  >
+                    {repo.language}
+                  </Text>
+                </HStack>
+              </CardBody>
             </Card>
           ))}
       </SimpleGrid>

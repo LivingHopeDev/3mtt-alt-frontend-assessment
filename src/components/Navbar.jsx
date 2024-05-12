@@ -42,13 +42,24 @@ export default function Navbar() {
   }
 
   return (
-    <Flex as="nav" p="10px" mb="5rem" alignItems="center">
-      <Heading as="h1">Available Repositories</Heading>
+    <Flex
+      as="nav"
+      alignItems="center"
+      bg="purple.400"
+      width="100%"
+      h="6rem"
+      position="fixed"
+      top="0"
+      left="0"
+      zIndex="1"
+    >
       <Spacer />
-      <HStack spacing="20px">
+      <HStack spacing="15px">
         <Avatar name="Adetayo" src={owner.avatar_url}></Avatar>
 
-        <Text>{owner.login}</Text>
+        <Text color="white" fontSize="1.5rem" fontWeight="500" mr="1rem">
+          {owner.login}
+        </Text>
       </HStack>
     </Flex>
   );
