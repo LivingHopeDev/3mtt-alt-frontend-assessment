@@ -1,8 +1,16 @@
-# React + Vite
+# Overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a web application designed to serve as a platform for GitHub repository management. Users can view detailed information about repositories, create new ones, and carry out a range of repository-related tasks.
 
-Currently, two official plugins are available:
+### Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1.  Dashboard: It shows all available Repositories
+
+![](./public/dashboard.png)
+
+2. Repository details: To get the ful details for a particular Repository, click on your desired repo and the full repo would be displayed on a different page.
+
+![](./public/RepoDetail.png)
+
+3.  Create Repo Form. For a new repo to be created, the add new repo button can be clicked to ge the form.
+    ![](./public/addForm.png)

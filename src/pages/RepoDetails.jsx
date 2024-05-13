@@ -1,4 +1,4 @@
-import { EditIcon, ViewIcon, Icon } from "@chakra-ui/icons";
+import { EditIcon, ViewIcon, Icon, DeleteIcon } from "@chakra-ui/icons";
 import { GoRepoForked } from "react-icons/go";
 import { MdRemoveRedEye } from "react-icons/md";
 import { MdStarBorderPurple500 } from "react-icons/md";
@@ -117,11 +117,11 @@ export default function RepoDetails() {
         <Divider borderColor="gray.200" />
         <CardFooter>
           <HStack>
-            <Button variant="ghost" leftIcon={<ViewIcon />}>
-              Watch
-            </Button>
             <Button variant="ghost" leftIcon={<EditIcon />}>
-              Comment
+              Edit
+            </Button>
+            <Button variant="ghost" leftIcon={<DeleteIcon />} bg="red">
+              Delete
             </Button>
           </HStack>
         </CardFooter>
