@@ -18,17 +18,21 @@ import {
   useToast,
   Avatar,
   Grid,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Skeleton, Stack } from "@chakra-ui/react";
 import "../Pagination.css";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getTimeDifference } from "../../timeConverter";
+import EditRepo from "../components/EditRepo";
 export default function RepoDetails() {
   const [repoDetails, setRepoDetails] = useState([]);
   const [isLoadingDetails, setLoadingDetails] = useState(false);
   const { name } = useParams();
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   useEffect(() => {
     if (name) {
       setLoadingDetails(true);
@@ -117,9 +121,14 @@ export default function RepoDetails() {
         <Divider borderColor="gray.200" />
         <CardFooter>
           <HStack>
-            <Button variant="ghost" leftIcon={<EditIcon />}>
+            <Button variant="ghost" leftIcon={<EditIcon />} onClick={onOpen}>
               Edit
             </Button>
+            <EditRepo
+              isOpen={isOpen}
+              onClose={onClose}
+              repoDetails={repoDetails}
+            />
             <Button variant="ghost" leftIcon={<DeleteIcon />} bg="red">
               Delete
             </Button>

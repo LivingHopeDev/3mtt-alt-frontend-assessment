@@ -23,6 +23,7 @@ import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import "../Pagination.css";
 import AddRepoModal from "../components/AddRepoModal";
+import axios from "axios";
 export default function Dashboard() {
   const [repos, setRepos] = useState([]);
   const [filteredRepos, setFilteredRepos] = useState([]);
@@ -32,38 +33,39 @@ export default function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const accessToken = import.meta.env.VITE_GITHUB_TOKEN;
 
   useEffect(() => {
-    setIsLoading(true);
-
-    fetch("https://api.github.com/users/LivingHopeDev/repos")
-      .then((res) => res.json())
-      .then((data) => {
-        setIsLoading(false);
-        if (data.message) {
-          return toast({
-            title: "Server error",
-            description: ` ${data.message}`,
-            duration: 5000,
-            isClosable: true,
-            status: "error",
-            position: "top",
-          });
-        }
-        setRepos(data);
-        setFilteredRepos(data);
-      })
-      .catch((error) => {
+    const fetchRepos = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(
+          "https://api.github.com/users/LivingHopeDev/repos",
+          {
+            headers: {
+              Authorization: `token ${accessToken}`,
+            },
+          }
+        );
+        setRepos(response.data);
+        setFilteredRepos(response.data);
+      } catch (error) {
+        console.error(error);
         toast({
           title: "Error while fetching",
-          description: ` ${error.message}`,
+          description: error.message,
           duration: 5000,
           isClosable: true,
           status: "error",
           position: "top",
         });
-      });
-  }, [toast]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRepos();
+  }, []);
 
   const indexOfLastRepo = (currentPage + 1) * reposPerPage;
   const indexOfFirstRepo = indexOfLastRepo - reposPerPage;

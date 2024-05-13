@@ -16,18 +16,20 @@ import {
   FormHelperText,
   Textarea,
   useToast,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function AddRepoModal({ isOpen, onClose }) {
-  const [newRepoName, setNewRepoName] = useState("");
-  const [newRepoDescription, setNewRepoDescription] = useState("");
-  const [newRepoVisibility, setNewRepoVisibility] = useState("public");
+export default function EditRepo({ isOpen, onClose, repoDetails }) {
+  const [newRepoName, setNewRepoName] = useState(repoDetails.name || "");
+  const [newRepoDescription, setNewRepoDescription] = useState(
+    repoDetails.description || ""
+  );
+  const [newRepoVisibility, setNewRepoVisibility] = useState(
+    repoDetails.visibility || "public"
+  );
   const toast = useToast();
-
-  const handleAddRepo = async (e) => {
+  const handleEditRepo = async (e) => {
     e.preventDefault();
     const newRepo = {
       name: newRepoName,
@@ -37,8 +39,8 @@ export default function AddRepoModal({ isOpen, onClose }) {
     const accessToken = import.meta.env.VITE_GITHUB_TOKEN;
 
     try {
-      const response = await axios.post(
-        "https://api.github.com/user/repos",
+      const response = await axios.get(
+        `https://api.github.com/user/repos/${name}`,
         newRepo,
         {
           headers: {
@@ -61,16 +63,7 @@ export default function AddRepoModal({ isOpen, onClose }) {
         window.location.reload();
       }
     } catch (error) {
-      if (error.message === "Request failed with status code 422") {
-        return toast({
-          title: "Error occured: Repository not created",
-          description: `Name already exist`,
-          duration: 5000,
-          isClosable: true,
-          status: "error",
-          position: "top",
-        });
-      }
+      console.log(error);
       toast({
         title: "Error occured: Repository not created",
         description: ` ${error.message}`,
@@ -86,10 +79,10 @@ export default function AddRepoModal({ isOpen, onClose }) {
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Create A New Repo</ModalHeader>
+        <ModalHeader>Edit Repo</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <form onSubmit={handleAddRepo}>
+          <form onSubmit={handleEditRepo}>
             <FormControl isRequired mb={3}>
               <FormLabel htmlFor="name">Enter Repo Name</FormLabel>
               <Input
