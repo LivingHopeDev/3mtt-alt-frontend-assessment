@@ -40,15 +40,16 @@ export default function Dashboard() {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          "https://api.github.com/users/LivingHopeDev/repos",
+          `https://api.github.com/users/LivingHopeDev/repos`,
           {
             headers: {
-              Authorization: `token ${accessToken}`,
+              Authorization: `${accessToken}`,
             },
           }
         );
         setRepos(response.data);
         setFilteredRepos(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error(error);
         toast({

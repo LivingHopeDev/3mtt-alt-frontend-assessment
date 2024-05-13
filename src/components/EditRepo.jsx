@@ -37,10 +37,9 @@ export default function EditRepo({ isOpen, onClose, repoDetails }) {
       visibility: newRepoVisibility,
     };
     const accessToken = import.meta.env.VITE_GITHUB_TOKEN;
-
     try {
-      const response = await axios.get(
-        `https://api.github.com/user/repos/${name}`,
+      const response = await axios.patch(
+        `https://api.github.com/repos/LivingHopeDev/${newRepo.name}`,
         newRepo,
         {
           headers: {
@@ -51,7 +50,7 @@ export default function EditRepo({ isOpen, onClose, repoDetails }) {
       if (response) {
         toast({
           title: "Successful",
-          description: "Repository created",
+          description: "Repository updated",
           duration: 5000,
           isClosable: true,
           status: "success",
@@ -65,7 +64,7 @@ export default function EditRepo({ isOpen, onClose, repoDetails }) {
     } catch (error) {
       console.log(error);
       toast({
-        title: "Error occured: Repository not created",
+        title: "Error occured: Repository not updated",
         description: ` ${error.message}`,
         duration: 5000,
         isClosable: true,
@@ -126,7 +125,7 @@ export default function EditRepo({ isOpen, onClose, repoDetails }) {
               <FormErrorMessage>Visibility is required</FormErrorMessage>
             </FormControl>
             <Button type="submit" colorScheme="purple" mt={4}>
-              Create Repository
+              Edit Repository
             </Button>
           </form>
         </ModalBody>
