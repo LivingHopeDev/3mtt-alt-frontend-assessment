@@ -2,8 +2,19 @@ import { Box, Heading, Text, Button, Card } from "@chakra-ui/react";
 
 const NotFound = () => {
   return (
-    <Box textAlign="center" py={10} px={6}>
-      <Card>
+    <Box
+      textAlign="center"
+      py={10}
+      px={6}
+      mt="6rem"
+      maxW={{
+        base: "100%",
+
+        lg: "60%",
+      }}
+      mx="auto"
+    >
+      <Card p={6}>
         <Heading as="h1" size="xl">
           Oops! Lost in the cosmos?
         </Heading>

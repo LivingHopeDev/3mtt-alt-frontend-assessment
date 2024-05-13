@@ -15,25 +15,62 @@ import {
   FormErrorMessage,
   FormHelperText,
   Textarea,
-  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function AddRepoModal({ isOpen, onClose }) {
   const [newRepoName, setNewRepoName] = useState("");
   const [newRepoDescription, setNewRepoDescription] = useState("");
   const [newRepoVisibility, setNewRepoVisibility] = useState("public");
-  const handleAddRepo = () => {
-    // Implement logic to create a new repo using the form state variables
-    console.log(
-      "Adding new repo:",
-      newRepoName,
-      newRepoDescription,
-      newRepoVisibility
-    );
-    setNewRepoName("");
-    setNewRepoDescription("");
-    onClose();
+  const toast = useToast();
+  const handleAddRepo = async (e) => {
+    e.preventDefault();
+    const newRepo = {
+      name: newRepoName,
+      description: newRepoDescription,
+      visibility: newRepoVisibility,
+    };
+    console.log(newRepo);
+    const accessToken = import.meta.env.VITE_GITHUB_TOKEN;
+
+    try {
+      const response = await axios.post(
+        "https://api.github.com/user/repos",
+        newRepo,
+        {
+          headers: {
+            Authorization: `token ${accessToken}`,
+          },
+        }
+      );
+      if (response) {
+        toast({
+          title: "Successful",
+          description: "Repository created",
+          duration: 5000,
+          isClosable: true,
+          status: "success",
+          position: "top",
+        });
+        // setNewRepoName("");
+        // setNewRepoDescription("");
+        // onClose();
+        console.log(response);
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error occured: Repository not created",
+        description: ` ${error.message}`,
+        duration: 5000,
+        isClosable: true,
+        status: "error",
+        position: "top",
+      });
+    }
   };
 
   return (
