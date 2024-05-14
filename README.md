@@ -14,3 +14,8 @@ This project is a web application designed to serve as a platform for GitHub rep
 
 3.  Create Repo Form. For a new repo to be created, the add new repo button can be clicked to ge the form.
     ![](./public/addForm.png)
+
+4.  404 Page: If a user search of a non-existent page.
+    ![](./public/404.png)
+5.  Errorboundary page: When there is an error in the application which is not neccessarily from the user.
+    ![](./public/errorboundary.png)
