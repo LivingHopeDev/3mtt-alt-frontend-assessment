@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Box, Center, Text } from "@chakra-ui/react";
 
 function ErrorBoundary({ children }) {
   const [hasError, setHasError] = useState(false);
@@ -16,13 +17,15 @@ function ErrorBoundary({ children }) {
   }, []);
 
   if (hasError) {
-    //  custom fallback UI
+    // Custom fallback UI
     return (
-      <div className="h-[70vh] flex justify-center items-center">
-        <h1 className="text-center text-[3rem] font-bold">
-          Something went wrong. View console for details.
-        </h1>
-      </div>
+      <Center height="70vh">
+        <Box textAlign="center">
+          <Text fontSize="3xl" fontWeight="bold">
+            Ooops! Something went wrong. It&apos;s not your fault.
+          </Text>
+        </Box>
+      </Center>
     );
   }
 
