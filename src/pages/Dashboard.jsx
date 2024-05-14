@@ -1,11 +1,4 @@
-import {
-  Avatar,
-  CardBody,
-  Center,
-  HStack,
-  Skeleton,
-  Stack,
-} from "@chakra-ui/react";
+import { Avatar, CardBody, HStack, Skeleton, Stack } from "@chakra-ui/react";
 import {
   SimpleGrid,
   Card,
@@ -40,7 +33,7 @@ export default function Dashboard() {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `https://api.github.com/users/LivingHopeDev/repos`,
+          `https://api.github.com/users/LivingHopeDev/repos?cachebust=${Math.random()}`,
           {
             headers: {
               Authorization: `${accessToken}`,
@@ -51,7 +44,6 @@ export default function Dashboard() {
         setFilteredRepos(response.data);
         console.log(response.data);
       } catch (error) {
-        console.error(error);
         toast({
           title: "Error while fetching",
           description: error.message,

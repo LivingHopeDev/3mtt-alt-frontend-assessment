@@ -1,7 +1,6 @@
 import {
   Input,
   Select,
-  Text,
   Button,
   Modal, // Import Modal here
   ModalOverlay,
@@ -17,7 +16,7 @@ import {
   Textarea,
   useToast,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 export default function EditRepo({ isOpen, onClose, repoDetails }) {

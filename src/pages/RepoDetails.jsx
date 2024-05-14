@@ -1,4 +1,4 @@
-import { EditIcon, ViewIcon, Icon, DeleteIcon } from "@chakra-ui/icons";
+import { EditIcon, Icon, DeleteIcon } from "@chakra-ui/icons";
 import { GoRepoForked } from "react-icons/go";
 import { MdRemoveRedEye } from "react-icons/md";
 import { MdStarBorderPurple500 } from "react-icons/md";
@@ -16,32 +16,35 @@ import {
   Button,
   Divider,
   useToast,
-  Avatar,
-  Grid,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Skeleton, Stack } from "@chakra-ui/react";
 import "../Pagination.css";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getTimeDifference } from "../../timeConverter";
 import EditRepo from "../components/EditRepo";
+import axios from "axios";
+
 export default function RepoDetails() {
   const [repoDetails, setRepoDetails] = useState([]);
   const [isLoadingDetails, setLoadingDetails] = useState(false);
   const { name } = useParams();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate();
+  const accessToken = import.meta.env.VITE_GITHUB_TOKEN;
 
   useEffect(() => {
     if (name) {
       setLoadingDetails(true);
-      fetch(`https://api.github.com/repos/LivingHopeDev/${name}`)
-        .then((res) => res.json())
-        .then((data) => {
+      axios
+        .get(`https://api.github.com/repos/LivingHopeDev/${name}`)
+        .then((response) => {
           setLoadingDetails(false);
+          const data = response.data;
           if (data.message) {
-            return toast({
+            toast({
               title: "Server error",
               description: ` ${data.message}`,
               duration: 5000,
@@ -49,23 +52,57 @@ export default function RepoDetails() {
               status: "error",
               position: "top",
             });
+          } else {
+            setRepoDetails(data);
           }
-          setRepoDetails(data);
         })
         .catch((error) => {
-          if (error.message) {
-            toast({
-              title: "Error while fetching",
-              description: ` ${error.message}`,
-              duration: 5000,
-              isClosable: true,
-              status: "error",
-              position: "top",
-            });
-          }
+          toast({
+            title: "Error while fetching",
+            description: ` ${error.message}`,
+            duration: 5000,
+            isClosable: true,
+            status: "error",
+            position: "top",
+          });
         });
     }
-  }, [name]);
+  }, [name, toast]);
+
+  const handleDelete = async (e, name) => {
+    e.preventDefault();
+    console.log("name", name);
+    try {
+      const response = await axios.delete(
+        `https://api.github.com/repos/LivingHopeDev/${name}`,
+        {
+          headers: {
+            Authorization: `token ${accessToken}`,
+          },
+        }
+      );
+      if (response) {
+        toast({
+          title: "Successful",
+          description: "Repository deleted",
+          duration: 5000,
+          isClosable: true,
+          status: "success",
+          position: "top",
+        });
+        navigate("/");
+      }
+    } catch (error) {
+      toast({
+        title: "Error occured: Repository not deleted",
+        description: ` ${error.message}`,
+        duration: 5000,
+        isClosable: true,
+        status: "error",
+        position: "top",
+      });
+    }
+  };
   if (isLoadingDetails) {
     return (
       <Stack>
@@ -87,7 +124,6 @@ export default function RepoDetails() {
       <Card borderTop="8px" borderColor="purple.400" bg="white">
         <CardHeader>
           <Flex gap={5} justifyContent="center">
-            {/* Center cardHeader content */}
             <Box>
               <Heading as="h3" size="sm">
                 {repoDetails.name}
@@ -119,21 +155,28 @@ export default function RepoDetails() {
           </HStack>
         </CardBody>
         <Divider borderColor="gray.200" />
-        <CardFooter>
-          <HStack>
-            <Button variant="ghost" leftIcon={<EditIcon />} onClick={onOpen}>
-              Edit
-            </Button>
-            <EditRepo
-              isOpen={isOpen}
-              onClose={onClose}
-              repoDetails={repoDetails}
-            />
-            <Button variant="ghost" leftIcon={<DeleteIcon />} bg="red">
-              Delete
-            </Button>
-          </HStack>
-        </CardFooter>
+        {repoDetails.name && repoDetails.name.includes("example") && (
+          <CardFooter>
+            <HStack>
+              <Button variant="ghost" leftIcon={<EditIcon />} onClick={onOpen}>
+                Edit
+              </Button>
+              <EditRepo
+                isOpen={isOpen}
+                onClose={onClose}
+                repoDetails={repoDetails}
+              />
+              <Button
+                variant="ghost"
+                leftIcon={<DeleteIcon />}
+                bg="red"
+                onClick={(e) => handleDelete(e, repoDetails.name)}
+              >
+                Delete
+              </Button>
+            </HStack>
+          </CardFooter>
+        )}
       </Card>
     </SimpleGrid>
   );

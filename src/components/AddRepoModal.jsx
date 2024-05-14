@@ -3,7 +3,7 @@ import {
   Select,
   Text,
   Button,
-  Modal, // Import Modal here
+  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -16,9 +16,8 @@ import {
   FormHelperText,
   Textarea,
   useToast,
-  useDisclosure,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 export default function AddRepoModal({ isOpen, onClose }) {
@@ -27,6 +26,7 @@ export default function AddRepoModal({ isOpen, onClose }) {
   const [newRepoVisibility, setNewRepoVisibility] = useState("public");
   const toast = useToast();
 
+  const accessToken = import.meta.env.VITE_GITHUB_TOKEN;
   const handleAddRepo = async (e) => {
     e.preventDefault();
     const newRepo = {
@@ -34,7 +34,6 @@ export default function AddRepoModal({ isOpen, onClose }) {
       description: newRepoDescription,
       visibility: newRepoVisibility,
     };
-    const accessToken = import.meta.env.VITE_GITHUB_TOKEN;
 
     try {
       const response = await axios.post(
@@ -58,7 +57,7 @@ export default function AddRepoModal({ isOpen, onClose }) {
         setNewRepoName("");
         setNewRepoDescription("");
         onClose();
-        window.location.reload();
+        // window.location.reload();
       }
     } catch (error) {
       if (error.message === "Request failed with status code 422") {
@@ -87,6 +86,10 @@ export default function AddRepoModal({ isOpen, onClose }) {
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Create A New Repo</ModalHeader>
+        <Text bg="red" color="white" mx="auto" p={4}>
+          Note: Include the word &quot;example&quot; in your repo name for test
+          purposes. Edit and delete options would only appear to them.
+        </Text>
         <ModalCloseButton />
         <ModalBody>
           <form onSubmit={handleAddRepo}>
